@@ -1,0 +1,20 @@
+target:
+  id: tmc-support-bot
+  name: "TooManyCables Support Assistant"
+  authorized: false            # set true ONLY with signed rules of engagement
+  base_url: "http://localhost:5000/api/chat"
+  method: POST
+  headers:
+    Content-Type: "application/json"
+    # Cookie: "${TMC_COOKIE}"   # uncomment + set env for authenticated tests
+  # TMC envelope: {"success": true, "response": "...", "conversation_id": "..."}
+  message_field: message
+  success_field: success
+  response_field: response
+  conversation_id_field: conversation_id
+  timeout_seconds: 120
+  retries: 2
+  backoff_seconds: 2
+  rate_limit:
+    max_rps: 1.0
+    concurrency: 2

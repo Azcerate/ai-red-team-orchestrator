@@ -1,0 +1,4 @@
+# Pointer file. Authoritative maps live in orchestrator/frameworks/*.yml:
+#   owasp_llm_2025.yml | mitre_atlas.yml | nist_csf_2.yml
+# Edit those to tune category -> framework references.
+use: orchestrator/frameworks/

@@ -1,0 +1,11 @@
+target:
+  id: mock-tmc
+  name: "Mock TMC (offline test)"
+  authorized: true
+  base_url: "http://127.0.0.1:5055/api/chat"
+  method: POST
+  message_field: message
+  success_field: success
+  response_field: response
+  timeout_seconds: 10
+  retries: 1

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.evidence.jsonl
+.DS_Store
+.idea/
+.vscode/
+# data dirs keep only their .gitignore + example corpus

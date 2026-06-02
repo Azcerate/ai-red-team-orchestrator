@@ -1,0 +1,7 @@
+campaign:
+  id: tmc
+  target_config: config/target_mock.yml
+  judge: config/judge.yml
+  report: config/report.yml
+  corpus:
+    - { path: "corpus/canary_rag.csv", category: canary_leakage }

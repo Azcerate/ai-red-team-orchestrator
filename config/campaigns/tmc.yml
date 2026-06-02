@@ -1,0 +1,16 @@
+campaign:
+  id: tmc
+  target_config: config/target.yml
+  description: "Quarterly AI red-team of the TMC support assistant"
+  judge: config/judge.yml
+  scoring: config/scoring.yml
+  report: config/report.yml
+  corpus:
+    - { path: "corpus/jailbreaks.csv",                category: jailbreak }
+    - { path: "corpus/harmful_prompt_injections.csv", category: prompt_injection }
+    - { path: "corpus/harmful_prompts.csv",           category: unsafe_output }
+    - { path: "corpus/offtopic_prompts.csv",          category: offtopic_abuse }
+    - { path: "corpus/context_overflow.csv",          category: context_overflow }
+    - { path: "corpus/canary_rag.csv",                category: canary_leakage }
+    - { path: "corpus/rag_fishing_prompts.csv",       category: rag_fishing }
+    - { path: "corpus/targeted_rag.csv",              category: rag_fishing }

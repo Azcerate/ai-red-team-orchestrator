@@ -1,0 +1,20 @@
+name: AI Red Team Gate
+on: [pull_request]
+jobs:
+  airt-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -e ./airt
+      - name: Run campaign + gate
+        run: |
+          cd airt
+          airt run --campaign config/campaigns/tmc.yml
+          # capture run_id from output in real use; shown here for shape:
+          airt gate --run-id "$RUN_ID" --baseline baselines/tmc.json \
+                    --thresholds config/gate.yml --json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: airt-report, path: airt/reports/ }

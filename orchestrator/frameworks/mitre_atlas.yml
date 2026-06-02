@@ -1,0 +1,13 @@
+# MITRE ATLAS technique mapping (verify IDs against https://atlas.mitre.org)
+mappings:
+  prompt_injection:   { id: AML.T0051, name: "LLM Prompt Injection" }
+  jailbreak:          { id: AML.T0054, name: "LLM Jailbreak" }
+  rag_fishing:        { id: AML.T0057, name: "LLM Data Leakage" }
+  canary_leakage:     { id: AML.T0057, name: "LLM Data Leakage" }
+  excessive_agency:   { id: AML.T0053, name: "LLM Plugin Compromise" }
+  unsafe_output:      { id: AML.T0050, name: "LLM Output Handling" }
+  system_prompt_leakage: { id: AML.T0057, name: "LLM Data Leakage" }
+  context_overflow:   { id: AML.T0052, name: "Resource exhaustion (verify)" }
+  rate_limit_weakness: { id: AML.T0034, name: "Cost Harvesting" }
+  idor_rbac:          { id: AML.T0057, name: "LLM Data Leakage" }
+  offtopic_abuse:     { id: AML.T0054, name: "LLM Jailbreak" }

@@ -1,0 +1,41 @@
+# OWASP Top 10 for LLM Applications 2025 (OWASP GenAI Security Project)
+# https://genai.owasp.org/llm-top-10/
+# NOTE: 2025 numbering (NOT the 2023 list). category -> primary/secondary refs.
+mappings:
+  prompt_injection:
+    primary: { id: LLM01, name: "Prompt Injection" }
+    remediation: "Input/output mediation, instruction isolation, allow-listing"
+  jailbreak:
+    primary: { id: LLM01, name: "Prompt Injection" }
+    remediation: "Layered guardrails, refusal training, output filtering"
+  rag_fishing:
+    primary: { id: LLM08, name: "Vector and Embedding Weaknesses" }
+    secondary: { id: LLM02, name: "Sensitive Information Disclosure" }
+    remediation: "Per-user retrieval filtering, document-level ACLs, chunk scoping"
+  canary_leakage:
+    primary: { id: LLM02, name: "Sensitive Information Disclosure" }
+    remediation: "Data minimization, retrieval ACLs, output DLP"
+  excessive_agency:
+    primary: { id: LLM06, name: "Excessive Agency" }
+    remediation: "Least-privilege tools, human-in-the-loop, action allow-list"
+  unsafe_output:
+    primary: { id: LLM05, name: "Improper Output Handling" }
+    remediation: "Encode/validate output; treat model output as untrusted"
+  system_prompt_leakage:
+    primary: { id: LLM07, name: "System Prompt Leakage" }
+    remediation: "No secrets in prompts; prompt-extraction defenses"
+  context_overflow:
+    primary: { id: LLM10, name: "Unbounded Consumption" }
+    secondary: { id: LLM01, name: "Prompt Injection" }
+    remediation: "Context/size limits, truncation policy, input caps"
+  rate_limit_weakness:
+    primary: { id: LLM10, name: "Unbounded Consumption" }
+    remediation: "Rate limits, quotas, anomaly alerts"
+  idor_rbac:
+    primary: { id: LLM06, name: "Excessive Agency" }
+    secondary: { id: LLM02, name: "Sensitive Information Disclosure" }
+    remediation: "Enforce authorization server-side, never in the prompt"
+  offtopic_abuse:
+    primary: { id: LLM09, name: "Misinformation" }
+    secondary: { id: LLM01, name: "Prompt Injection" }
+    remediation: "Topic guardrails, policy enforcement, monitoring"

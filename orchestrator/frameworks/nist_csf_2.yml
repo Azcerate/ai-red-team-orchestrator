@@ -1,0 +1,14 @@
+# NIST CSF 2.0 function/category mapping (supporting controls)
+mappings:
+  prompt_injection:   { id: "PR.DS / DE.CM", name: "Data Security / Continuous Monitoring" }
+  jailbreak:          { id: "PR.DS / DE.CM", name: "Data Security / Continuous Monitoring" }
+  rag_fishing:        { id: "PR.AC / PR.DS", name: "Access Control / Data Security" }
+  canary_leakage:     { id: "PR.DS", name: "Data Security" }
+  excessive_agency:   { id: "PR.AC / PR.PS", name: "Access Control / Platform Security" }
+  unsafe_output:      { id: "PR.DS / DE.CM", name: "Data Security / Continuous Monitoring" }
+  system_prompt_leakage: { id: "PR.DS", name: "Data Security" }
+  context_overflow:   { id: "PR.IR / DE.CM", name: "Tech Infrastructure Resilience / Monitoring" }
+  rate_limit_weakness: { id: "PR.IR / DE.CM", name: "Tech Infrastructure Resilience / Monitoring" }
+  idor_rbac:          { id: "PR.AC", name: "Identity Management & Access Control" }
+  offtopic_abuse:     { id: "GV.PO / DE.CM", name: "Policy / Continuous Monitoring" }
+  model_drift:        { id: "ID.RA / DE.CM / GV.OV", name: "Risk Assessment / Monitoring / Oversight" }
