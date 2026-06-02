@@ -142,6 +142,28 @@ def _dispatch(args) -> int:
         results = read_results(args.run_id)
         judge_by_key = {r.prompt_id: (r.judge_label or "") for r in results}
         print(metrics_report(evaluate_judge(args.gold, judge_by_key, key="prompt_id"))); return EXIT_OK
+    if args.cmd == "init":
+        import shutil
+        from pathlib import Path as _P
+        base = _P(__file__).parent / "templates"
+        if not base.exists():
+            print("templates not bundled in package", file=sys.stderr); return EXIT_INTERNAL
+        copied = []; skipped = 0
+        for src in sorted(base.rglob("*")):
+            if src.is_file():
+                dst = _P(src.relative_to(base))
+                if dst.exists():
+                    skipped += 1; continue
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(src, dst); copied.append(str(dst))
+        print(f"scaffolded {len(copied)} files" + (f" (skipped {skipped} existing)" if skipped else ""))
+        for c in copied:
+            print("  +", c)
+        print("\nNext:\n  python mock_target.py            # terminal 2 (offline demo target)\n"
+              "  airt run --campaign config/campaigns/example.yml\n"
+              "  airt report --run-id <RUN_ID> --format md,html --report config/report.yml")
+        return EXIT_OK
+
     raise NotImplementedError(f"'{args.cmd}' is a stub in the MVP scaffold")
 
 

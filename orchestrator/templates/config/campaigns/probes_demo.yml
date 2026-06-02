@@ -1,0 +1,6 @@
+campaign:
+  id: probes
+  target_config: config/target_mock.yml
+  judge: config/judge.yml
+  report: config/report.yml
+  probes: [canary_exfil]      # add: dan_jailbreak, prompt_injection, encoding_obfuscation, ...

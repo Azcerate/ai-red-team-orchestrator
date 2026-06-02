@@ -1,0 +1,13 @@
+report:
+  campaign_id: tmc
+  client: "Acme AI Inc."
+  target_name: "TooManyCables Support Assistant"
+  formats: [md, html]
+  include_appendix_raw: false
+  branding:
+    company_name: "DMCS Labs"
+    primary_color: "#0B3D91"
+    footer: "Confidential — prepared for Acme AI Inc."
+  evidence:
+    redact: true
+    max_snippet_chars: 600

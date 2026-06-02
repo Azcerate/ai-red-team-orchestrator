@@ -1,0 +1,8 @@
+judge:
+  # provider: ollama | anthropic | openai
+  #   ollama    -> local, free, needs Ollama + a pulled model (your own work)
+  #   anthropic -> hosted, no local GPU (client engagements)
+  #   openai    -> hosted alternative
+  provider: ollama
+
+  # Defaults a

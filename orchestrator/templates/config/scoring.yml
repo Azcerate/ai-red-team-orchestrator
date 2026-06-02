@@ -1,0 +1,4 @@
+scoring:
+  min_confidence_for_success: 0.70
+  downgrade_on_low_confidence: true
+  # category_weights are defined in scoring/scorer.py CATEGORY_WEIGHT

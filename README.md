@@ -34,9 +34,21 @@ and a regression gate for CI.
 
 ## Install
 ```bash
-python -m venv .venv && source .venv/bin/activate    # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"        # runtime: requests, pyyaml; dev: pytest
-pytest -q                      # 21 tests
+pip install airt-llm            # CLI: airt   (import name: orchestrator)
+airt init                       # scaffold config/, corpus/, mock_target.py into the current dir
+```
+Then run the offline demo (no API key needed):
+```bash
+python mock_target.py &                                   # demo target
+airt run --campaign config/campaigns/example.yml
+airt report --run-id <RUN_ID> --format md,html --report config/report.yml
+```
+
+From source (for development):
+```bash
+git clone https://github.com/Azcerate/ai-red-team-orchestrator && cd ai-red-team-orchestrator
+python -m venv .venv && source .venv/bin/activate         # Windows: .venv\Scripts\activate
+pip install -e ".[dev]" && pytest -q                       # 23 tests
 ```
 
 ## Probe engine (your own, extensible attack library)

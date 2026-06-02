@@ -1,0 +1,14 @@
+target:
+  id: anthropic-messages
+  name: "Anthropic Messages API"
+  authorized: false
+  base_url: "https://api.anthropic.com/v1/messages"
+  method: POST
+  headers:
+    Content-Type: application/json
+    x-api-key: "${ANTHROPIC_API_KEY}"
+    anthropic-version: "2023-06-01"
+  body_template: '{"model":"claude-sonnet-4-6","max_tokens":512,"messages":[{"role":"user","content":{{PROMPT}}}]}'
+  response_path: "content.0.text"
+  timeout_seconds: 60
+  retries: 2

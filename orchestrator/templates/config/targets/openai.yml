@@ -1,0 +1,13 @@
+target:
+  id: openai-chat
+  name: "OpenAI Chat Completions"
+  authorized: false            # set true only with authorization to test this key/app
+  base_url: "https://api.openai.com/v1/chat/completions"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Authorization: "Bearer ${OPENAI_API_KEY}"
+  body_template: '{"model":"gpt-4o-mini","messages":[{"role":"user","content":{{PROMPT}}}],"temperature":0}'
+  response_path: "choices.0.message.content"
+  timeout_seconds: 60
+  retries: 2
