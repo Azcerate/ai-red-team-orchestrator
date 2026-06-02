@@ -1,0 +1,36 @@
+name: "AI Red Team Gate (airt)"
+description: "Run airt against an AI target and fail the build on security regressions (OWASP/MITRE/NIST)."
+branding:
+  icon: "shield"
+  color: "blue"
+inputs:
+  campaign:
+    description: "Path to the campaign YAML"
+    required: true
+  baseline:
+    description: "Path to the baseline JSON"
+    required: false
+    default: "baselines/example.json"
+  thresholds:
+    description: "Path to the gate thresholds YAML"
+    required: false
+    default: "config/gate.yml"
+  campaign-id:
+    description: "Campaign id (for metrics keys)"
+    required: false
+    default: "example"
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - shell: bash
+      run: pip install airt-llm || pip install -e .
+    - shell: bash
+      run: |
+        RID=$(airt run --campaign "${{ inputs.campaign }}" | grep -o 'run complete: [^ ]*' | cut -d' ' -f3)
+        echo "run_id=$RID"
+        airt report --run-id "$RID" --format md,html --report config/report.yml || true
+        airt gate --run-id "$RID" --baseline "${{ inputs.baseline }}" \
+          --thresholds "${{ inputs.thresholds }}" --campaign-id "${{ inputs.campaign-id }}" --json

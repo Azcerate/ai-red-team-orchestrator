@@ -1,0 +1,9 @@
+target:
+  id: ollama-local
+  name: "Ollama (local model)"
+  authorized: true
+  base_url: "http://localhost:11434/api/generate"
+  method: POST
+  body_template: '{"model":"llama3.1:8b","prompt":{{PROMPT}},"stream":false}'
+  response_path: "response"
+  timeout_seconds: 120

@@ -13,9 +13,29 @@ def register(cls: type[Probe]) -> type[Probe]:
     return cls
 
 
+_PLUGINS_LOADED = False
+
+
 def _ensure_loaded() -> None:
+    global _PLUGINS_LOADED
     # importing the library module triggers @register decorators
     from . import library  # noqa: F401
+    if _PLUGINS_LOADED:
+        return
+    _PLUGINS_LOADED = True
+    # third-party probe plugins register under the "airt.probes" entry-point group
+    try:
+        from importlib.metadata import entry_points
+        eps = entry_points()
+        group = eps.select(group="airt.probes") if hasattr(eps, "select") else eps.get("airt.probes", [])
+        for ep in group:
+            try:
+                cls = ep.load()
+                register(cls)
+            except Exception:
+                pass  # a broken plugin must never break the core
+    except Exception:
+        pass
 
 
 def all_probes() -> dict[str, type[Probe]]:

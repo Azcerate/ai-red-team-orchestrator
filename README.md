@@ -36,7 +36,7 @@ and a regression gate for CI.
 ```bash
 python -m venv .venv && source .venv/bin/activate    # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"        # runtime: requests, pyyaml; dev: pytest
-pytest -q                      # 18 tests
+pytest -q                      # 21 tests
 ```
 
 ## Probe engine (your own, extensible attack library)
@@ -48,9 +48,12 @@ airt probes list                                   # see registered probes
 airt run --campaign config/campaigns/probes_demo.yml          # campaign-defined probes
 airt run --campaign config/campaigns/example.yml --probes dan_jailbreak,prompt_injection,encoding_obfuscation
 ```
-Starter probes: `dan_jailbreak`, `prompt_injection`, `encoding_obfuscation` (mutator-driven),
-`canary_exfil`, `system_prompt_leak`, `offtopic_scope`, `excessive_agency`. Add your own by
-subclassing `Probe` and decorating with `@register` in `orchestrator/probes/library.py`.
+Starter probes (11): `dan_jailbreak`, `prompt_injection`, `encoding_obfuscation` (mutator-driven),
+`canary_exfil`, `system_prompt_leak`, `offtopic_scope`, `excessive_agency`, `rag_fishing`,
+`idor_rbac`, `context_overflow`, `glitch_token`. Add your own in-tree by subclassing `Probe`
+and `@register` in `orchestrator/probes/library.py`, or **ship a plugin**: any installed package
+exposing a `Probe` under the `airt.probes` entry point is auto-discovered (see
+[CONTRIBUTING](CONTRIBUTING.md)).
 
 **Ingest NVIDIA garak** (use its 3,000+ prompts, get airt's report + gate):
 ```bash
@@ -114,6 +117,33 @@ $ echo $?
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...      # or OPENAI_API_KEY
 # set provider: anthropic  in config/judge.yml
+```
+
+## Targets — test real providers
+Point airt at any JSON HTTP endpoint. Presets ship in `config/targets/`:
+```bash
+export OPENAI_API_KEY=sk-...      # or ANTHROPIC_API_KEY / local Ollama
+# set authorized: true in the preset only with permission to test that key/app,
+# then reference it as target_config in your campaign:
+#   target_config: config/targets/openai.yml
+```
+Any provider works via `body_template` (with `{{PROMPT}}`) + dotted `response_path`
+(e.g. `choices.0.message.content`). Presets included: OpenAI, Anthropic, Ollama, generic.
+
+## Use in CI (GitHub Action)
+```yaml
+- uses: Azcerate/ai-red-team-orchestrator@main
+  with:
+    campaign: config/campaigns/example.yml
+    baseline: baselines/example.json
+    thresholds: config/gate.yml
+    campaign-id: example
+```
+
+## Docker
+```bash
+docker build -t airt .
+docker run --rm -v "$PWD:/app" airt run --campaign config/campaigns/example.yml
 ```
 
 ## CLI

@@ -1,24 +1,46 @@
 [project]
-name = "airt"
-version = "0.1.0"
-description = "AI Red Team Orchestrator & Compliance Report Generator"
+name = "airt-llm"
+version = "0.2.0"
+description = "AI Red Team Orchestrator & Compliance Report Generator — probe LLM/RAG systems, map findings to OWASP/MITRE/NIST, gate CI."
+readme = "README.md"
 requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Anthony N. Saunders" }]
+keywords = ["ai-security","llm-security","red-team","owasp-llm","mitre-atlas","nist-csf","prompt-injection","rag-security","devsecops","garak"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Topic :: Security",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+]
 dependencies = ["requests>=2.31", "pyyaml>=6.0"]
 
 [project.optional-dependencies]
 report = ["markdown>=3.5", "weasyprint>=60"]
 dev = ["pytest>=8.0"]
 
+[project.urls]
+Homepage = "https://github.com/Azcerate/ai-red-team-orchestrator"
+Repository = "https://github.com/Azcerate/ai-red-team-orchestrator"
+Issues = "https://github.com/Azcerate/ai-red-team-orchestrator/issues"
+
 [project.scripts]
 airt = "orchestrator.cli:main"
+
+# Probe plugins published by others register under this group (see CONTRIBUTING).
+# [project.entry-points."airt.probes"]
+# my_probe = "my_pkg.module:MyProbe"
 
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
-# Explicit package discovery (avoids flat-layout auto-discovery errors in CI)
 [tool.setuptools.packages.find]
 include = ["orchestrator*"]
+
+[tool.setuptools.package-data]
+orchestrator = ["frameworks/*.yml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
