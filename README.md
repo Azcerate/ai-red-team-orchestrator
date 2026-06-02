@@ -1,5 +1,9 @@
 # airt — AI Red Team Orchestrator & Compliance Report Generator
 
+[![CI](https://github.com/Azcerate/ai-red-team-orchestrator/actions/workflows/ci.yml/badge.svg)](https://github.com/Azcerate/ai-red-team-orchestrator/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
+
 Test LLM chatbots, RAG assistants, and AI features for prompt injection, jailbreaks,
 data leakage, RAG/canary exfiltration, excessive agency, unsafe output, context overflow,
 and rate-limit weakness — then emit an **OWASP LLM Top 10 (2025) / MITRE ATLAS / NIST CSF 2.0**
