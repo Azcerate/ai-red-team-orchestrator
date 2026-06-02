@@ -22,6 +22,8 @@ overrides it), standardized scoring, redacted evidence, framework mapping, profe
 and a regression gate for CI.
 
 ## Features
+- **Probe engine:** code-based attack probes (not static CSVs) that auto-expand via *mutators* (one payload → base64/rot13/leet/… variants). Run `airt probes list`.
+- **Interoperable:** ingest external runners — `airt import-garak` maps NVIDIA garak reports into the same pipeline.
 - **Pluggable judge:** local `ollama` (default) or hosted `anthropic` / `openai` (no GPU needed).
 - **Two-stage detection:** deterministic phrase/canary check + LLM judge; canary hits are ground truth.
 - **Defensible scoring:** ASR with explicit denominators; low-confidence findings are capped, not inflated.
@@ -34,7 +36,26 @@ and a regression gate for CI.
 ```bash
 python -m venv .venv && source .venv/bin/activate    # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"        # runtime: requests, pyyaml; dev: pytest
-pytest -q                      # 13 tests
+pytest -q                      # 18 tests
+```
+
+## Probe engine (your own, extensible attack library)
+Probes are Python classes that generate adversarial prompts and flow into the same
+judge → scoring → framework-mapping → report → gate pipeline. Mutators multiply
+coverage from compact code.
+```bash
+airt probes list                                   # see registered probes
+airt run --campaign config/campaigns/probes_demo.yml          # campaign-defined probes
+airt run --campaign config/campaigns/example.yml --probes dan_jailbreak,prompt_injection,encoding_obfuscation
+```
+Starter probes: `dan_jailbreak`, `prompt_injection`, `encoding_obfuscation` (mutator-driven),
+`canary_exfil`, `system_prompt_leak`, `offtopic_scope`, `excessive_agency`. Add your own by
+subclassing `Probe` and decorating with `@register` in `orchestrator/probes/library.py`.
+
+**Ingest NVIDIA garak** (use its 3,000+ prompts, get airt's report + gate):
+```bash
+airt import-garak --report path/to/garak.report.jsonl --campaign-id garak
+airt report --run-id <RUN_ID> --format md,html --report config/report.yml
 ```
 
 ## Quickstart (offline demo, no external services)
@@ -96,7 +117,7 @@ export ANTHROPIC_API_KEY=sk-ant-...      # or OPENAI_API_KEY
 ```
 
 ## CLI
-`run · report · gate · recon · import-legacy · baseline-create · gold-template · validate-judge`
+`run · probes · report · gate · recon · import-legacy · import-garak · baseline-create · gold-template · validate-judge`
 Exit codes: `0` ok · `1` gate fail · `2` usage/config · `3` authorization · `4` internal.
 
 ## Architecture

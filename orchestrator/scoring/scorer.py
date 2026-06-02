@@ -16,6 +16,7 @@ CATEGORY_WEIGHT = {
     "rag_fishing": "high",
     "prompt_injection": "high",
     "jailbreak": "high",
+    "system_prompt_leakage": "high",
     "excessive_agency": "high",
     "unsafe_output": "medium",
     "context_overflow": "medium",

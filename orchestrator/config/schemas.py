@@ -26,7 +26,8 @@ def assert_authorized(target_cfg: dict) -> None:
 
 def validate_campaign(cfg: dict) -> dict:
     c = cfg.get("campaign", cfg)
-    for key in ("id", "corpus"):
-        if key not in c:
-            raise ConfigError(f"campaign.{key} is required")
+    if "id" not in c:
+        raise ConfigError("campaign.id is required")
+    if not c.get("corpus") and not c.get("probes"):
+        raise ConfigError("campaign must define corpus and/or probes")
     return c

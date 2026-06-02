@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: airt
+Version: 0.1.0
+Summary: AI Red Team Orchestrator & Compliance Report Generator
+Requires-Python: >=3.10
+License-File: LICENSE
+Requires-Dist: requests>=2.31
+Requires-Dist: pyyaml>=6.0
+Provides-Extra: report
+Requires-Dist: markdown>=3.5; extra == "report"
+Requires-Dist: weasyprint>=60; extra == "report"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Dynamic: license-file

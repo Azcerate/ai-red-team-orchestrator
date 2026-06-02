@@ -11,13 +11,16 @@ def main(argv=None) -> int:
     r = sub.add_parser("run"); r.add_argument("--campaign", required=True); r.add_argument("--limit", type=int)
     r.add_argument("--category"); r.add_argument("--concurrency", type=int, default=2)
     r.add_argument("--dry-run", action="store_true"); r.add_argument("--no-redact", action="store_true")
+    r.add_argument("--probes", help="comma-separated probe names, or 'all'")
     rep = sub.add_parser("report"); rep.add_argument("--run-id", required=True); rep.add_argument("--format", default="md"); rep.add_argument("--report")
     g = sub.add_parser("gate"); g.add_argument("--run-id", required=True); g.add_argument("--baseline", required=True)
     g.add_argument("--thresholds", required=True); g.add_argument("--campaign-id", default="tmc"); g.add_argument("--json", action="store_true")
     imp = sub.add_parser("import-legacy"); imp.add_argument("--glob", required=True); imp.add_argument("--campaign-id", default="legacy")
+    ig = sub.add_parser("import-garak"); ig.add_argument("--report", required=True, help="garak .report.jsonl"); ig.add_argument("--campaign-id", default="garak")
     b = sub.add_parser("baseline-create"); b.add_argument("--run-id", required=True); b.add_argument("--out", required=True); b.add_argument("--campaign-id", default="tmc")
     rc = sub.add_parser("recon"); rc.add_argument("--target", default="config/target.yml"); rc.add_argument("--campaign-id", default="tmc")
     rc.add_argument("--n", type=int, default=50); rc.add_argument("--rpm", type=float, default=120.0)
+    pr = sub.add_parser("probes"); pr.add_argument("action", nargs="?", default="list", choices=["list"])
     gt = sub.add_parser("gold-template"); gt.add_argument("--run-id", required=True); gt.add_argument("--out", required=True); gt.add_argument("--per-category", type=int, default=20)
     vj = sub.add_parser("validate-judge"); vj.add_argument("--run-id", required=True); vj.add_argument("--gold", required=True)
     for name in ("judge", "score", "export", "init"):
@@ -38,8 +41,19 @@ def main(argv=None) -> int:
 def _dispatch(args) -> int:
     if args.cmd == "run":
         from .core.pipeline import run_campaign
+        probes = args.probes.split(",") if args.probes else None
         run_campaign(args.campaign, limit=args.limit, category=args.category,
-                     dry_run=args.dry_run, redact=not args.no_redact, concurrency=args.concurrency)
+                     dry_run=args.dry_run, redact=not args.no_redact,
+                     concurrency=args.concurrency, probes=probes)
+        return EXIT_OK
+    if args.cmd == "probes":
+        from .probes.registry import all_probes
+        probes = all_probes()
+        print(f"{len(probes)} probes registered:\n")
+        for name, cls in sorted(probes.items()):
+            inst = cls()
+            n = len(list(inst.generate()))
+            print(f"  {name:22s} [{inst.category}]  {n:>2d} prompts — {inst.description}")
         return EXIT_OK
     if args.cmd == "report":
         from .storage.jsonl import read_results
@@ -73,15 +87,27 @@ def _dispatch(args) -> int:
         from .core.ids import mint_run_id
         from .scoring.scorer import score_result
         from .frameworks.mapper import FrameworkMapper
-        paths = [Path(p) for p in sorted(_glob.glob(args.glob))] if any(c in args.glob for c in "*?[") else [Path(args.glob)]
+        paths = [Path(x) for x in sorted(_glob.glob(args.glob))] if any(c in args.glob for c in "*?[") else [Path(args.glob)]
         if not paths:
             print(f"no files matched: {args.glob}", file=sys.stderr); return EXIT_USAGE
-        run_id = mint_run_id(args.campaign_id); mapper = FrameworkMapper(); all_results = []
+        run_id = mint_run_id(args.campaign_id); mapper = FrameworkMapper(); out = []
         for pth in paths:
             for res in import_legacy_csv(pth, run_id, args.campaign_id):
-                all_results.append(mapper.map_result(score_result(res)))
-        write_results(run_id, all_results)
-        print(f"imported {len(all_results)} rows from {len(paths)} file(s) -> run_id={run_id}")
+                out.append(mapper.map_result(score_result(res)))
+        write_results(run_id, out)
+        print(f"imported {len(out)} rows from {len(paths)} file(s) -> run_id={run_id}")
+        return EXIT_OK
+    if args.cmd == "import-garak":
+        from .storage.garak import import_garak_report
+        from .storage.jsonl import write_results
+        from .core.ids import mint_run_id
+        from .scoring.scorer import score_result
+        from .frameworks.mapper import FrameworkMapper
+        run_id = mint_run_id(args.campaign_id); mapper = FrameworkMapper()
+        out = [mapper.map_result(score_result(res))
+               for res in import_garak_report(args.report, run_id, args.campaign_id)]
+        write_results(run_id, out)
+        print(f"imported {len(out)} garak outputs -> run_id={run_id}")
         return EXIT_OK
     if args.cmd == "baseline-create":
         from .storage.jsonl import read_results

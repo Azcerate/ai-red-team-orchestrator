@@ -1,7 +1,6 @@
 """End-to-end orchestration: load -> run -> judge -> score -> map -> evidence -> persist.
 
-This wires the modules together. The runner/judge make network calls, so the
-pipeline is import-safe but requires a reachable target + judge at runtime.
+Prompt sources: corpus CSV files and/or code-based probes (the probe engine).
 """
 from __future__ import annotations
 
@@ -10,6 +9,7 @@ import concurrent.futures as cf
 from ..config.loader import load_yaml
 from ..config.schemas import assert_authorized, validate_campaign, validate_target
 from ..corpus.loader import load_campaign_corpus
+from ..core.errors import ConfigError
 from ..evidence.store import attach_evidence
 from ..frameworks.mapper import FrameworkMapper
 from ..judges.ensemble import EnsembleJudge
@@ -20,24 +20,40 @@ from .ids import mint_run_id
 from .models import TestResult
 
 
+def _gather_items(campaign, probes=None):
+    items = []
+    if campaign.get("corpus"):
+        items.extend(load_campaign_corpus(campaign["corpus"]))
+    probe_names = probes if probes is not None else campaign.get("probes")
+    if probe_names:
+        from ..probes.registry import load_probes
+        for probe in load_probes(probe_names):
+            items.extend(list(probe.generate()))
+    return items
+
+
 def run_campaign(campaign_path: str, limit: int | None = None,
                  category: str | None = None, dry_run: bool = False,
-                 redact: bool = True, concurrency: int = 2) -> str:
+                 redact: bool = True, concurrency: int = 2,
+                 probes=None) -> str:
     campaign = validate_campaign(load_yaml(campaign_path))
     target = validate_target(load_yaml(_target_path(campaign)))
-    assert_authorized(target)                       # ROE gate (raises if not authorized)
+    assert_authorized(target)                       # ROE gate
 
-    items = load_campaign_corpus(campaign["corpus"])
+    items = _gather_items(campaign, probes)
     if category:
         items = [i for i in items if i.category == category]
     if limit:
         items = items[:limit]
+    if not items:
+        raise ConfigError("no prompts: provide corpus files and/or probes")
 
     run_id = mint_run_id(campaign["id"])
     if dry_run:
-        print(f"[dry-run] {len(items)} prompts across "
-              f"{len({i.category for i in items})} categories against "
-              f"{target.get('base_url')} — no requests sent. run_id={run_id}")
+        cats = sorted({i.category for i in items})
+        print(f"[dry-run] {len(items)} prompts across {len(cats)} categories "
+              f"({', '.join(cats)}) against {target.get('base_url')} "
+              f"— no requests sent. run_id={run_id}")
         return run_id
 
     judge_cfg = load_yaml(campaign["judge"]).get("judge", {}) if campaign.get("judge") else {}
@@ -65,5 +81,4 @@ def run_campaign(campaign_path: str, limit: int | None = None,
 
 
 def _target_path(campaign: dict) -> str:
-    # campaign references a target id; for MVP we load config/target.yml
     return campaign.get("target_config", "config/target.yml")

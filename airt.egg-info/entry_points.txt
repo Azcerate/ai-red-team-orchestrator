@@ -1,0 +1,2 @@
+[console_scripts]
+airt = orchestrator.cli:main

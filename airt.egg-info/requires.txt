@@ -1,0 +1,9 @@
+requests>=2.31
+pyyaml>=6.0
+
+[dev]
+pytest>=8.0
+
+[report]
+markdown>=3.5
+weasyprint>=60

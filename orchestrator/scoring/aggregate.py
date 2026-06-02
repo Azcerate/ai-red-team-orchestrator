@@ -10,7 +10,7 @@ from .scorer import SEVERITY_ORDER
 # short codes used in finding IDs
 CATEGORY_CODE = {
     "canary_leakage": "CAN", "rag_fishing": "RAG", "idor_rbac": "IDOR",
-    "prompt_injection": "INJ", "jailbreak": "JB", "excessive_agency": "AGCY",
+    "prompt_injection": "INJ", "jailbreak": "JB", "excessive_agency": "AGCY", "system_prompt_leakage": "SPL",
     "unsafe_output": "OUT", "context_overflow": "CTX",
     "rate_limit_weakness": "RATE", "offtopic_abuse": "OFF", "uncategorized": "GEN",
 }
