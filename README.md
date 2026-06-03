@@ -34,6 +34,7 @@ mapping, professional reports, and a regression gate for CI.
 - **Regression gate:** baseline diff + thresholds + CI exit codes.
 - **Judge validation (workflow):** label a gold set → measure precision / recall / F1 / Cohen's κ before you quote any reliability number.
 
+> 📖 **Full usage guide:** [docs/USAGE.md](docs/USAGE.md).
 > **How does this compare to garak / PyRIT / promptfoo?** See [docs/comparison.md](docs/comparison.md).
 > Short version: airt is the *compliance-evidence + CI-gate* layer, and it **ingests garak** —
 > complement, don't compete.
