@@ -19,9 +19,9 @@ mapped report and a **CI regression gate**.
 ## Why
 Teams ship LLM features faster than they can test them, and generic scanners don't understand
 LLM-specific failure modes. `airt` is the engineering + reporting layer around an attack corpus:
-campaign orchestration, a **validated** LLM-as-judge (with a deterministic canary check that
-overrides it), standardized scoring, redacted evidence, framework mapping, professional reports,
-and a regression gate for CI.
+campaign orchestration, a deterministic canary check + an LLM-as-judge **you can validate against a
+human-labeled gold set** (precision/recall/F1/κ), standardized scoring, redacted evidence, framework
+mapping, professional reports, and a regression gate for CI.
 
 ## Features
 - **Probe engine:** code-based attack probes (not static CSVs) that auto-expand via *mutators* (one payload → base64/rot13/leet/… variants). Run `airt probes list`.
@@ -32,7 +32,7 @@ and a regression gate for CI.
 - **Framework mapping:** OWASP LLM 2025, MITRE ATLAS, NIST CSF 2.0.
 - **Client-grade reports:** Markdown + HTML (+ PDF via WeasyPrint).
 - **Regression gate:** baseline diff + thresholds + CI exit codes.
-- **Judge validation:** gold-set workflow → precision / recall / F1 / Cohen's κ.
+- **Judge validation (workflow):** label a gold set → measure precision / recall / F1 / Cohen's κ before you quote any reliability number.
 
 > **How does this compare to garak / PyRIT / promptfoo?** See [docs/comparison.md](docs/comparison.md).
 > Short version: airt is the *compliance-evidence + CI-gate* layer, and it **ingests garak** —

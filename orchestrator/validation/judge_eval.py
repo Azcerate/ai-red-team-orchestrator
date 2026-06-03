@@ -86,11 +86,16 @@ def write_gold_template(results, out_path, per_category=20):
     for cat,items in by.items():
         items=sorted(items,key=lambda r:(0 if r.review_status=="needs_review" else 1, abs((r.judge_confidence or 0)-0.5)))
         for r in items[:per_category]:
-            rows.append({"prompt_id":r.prompt_id,"category":r.category,"judge_label":r.judge_label or "",
+            rows.append({"prompt_id":r.prompt_id,"category":r.category,
+                "attack_type":r.attack_type or "",
+                "judge_label":r.judge_label or "",
                 "judge_confidence":r.judge_confidence if r.judge_confidence is not None else "",
-                "response_excerpt":(r.response_text or "")[:160].replace("\n"," "),"human_label":""})
+                "prompt_excerpt":(r.prompt or "")[:300].replace("\n"," "),
+                "response_excerpt":(r.response_text or "")[:400].replace("\n"," "),
+                "human_label":""})  # analyst fills: success | fail | partial
     p=_P(out_path); p.parent.mkdir(parents=True,exist_ok=True)
     with p.open("w",newline="",encoding="utf-8") as f:
-        w=_csv.DictWriter(f,fieldnames=["prompt_id","category","judge_label","judge_confidence","response_excerpt","human_label"])
+        w=_csv.DictWriter(f,fieldnames=["prompt_id","category","attack_type","judge_label",
+            "judge_confidence","prompt_excerpt","response_excerpt","human_label"])
         w.writeheader(); w.writerows(rows)
     return len(rows)

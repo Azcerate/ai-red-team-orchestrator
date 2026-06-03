@@ -8,7 +8,7 @@ their output. Use the right tool (or combine them).
 - **garak (NVIDIA)** — the broadest open *scanner*: 150+ probes, 3,000+ prompts, per-probe detectors, JSONL output. Best raw attack coverage. airt can **ingest garak** reports.
 - **PyRIT (Microsoft)** — a powerful *framework* for multi-turn / orchestrated attacks (Crescendo, TAP), converters, memory/chain-of-custody. Most flexible; requires scripting expertise.
 - **promptfoo** — developer-friendly, app-aware attack generation (50+ vuln types), CI gates, and a polished web UI. Excellent for dev-facing eval/CI.
-- **airt** — focused on **auditor-ready, framework-mapped evidence**: OWASP LLM 2025 + MITRE ATLAS + NIST CSF, a **validated** judge (publishable precision/recall/F1/κ), a regression gate, a code-based probe engine, and ingestion of other tools' output.
+- **airt** — focused on **auditor-ready, framework-mapped evidence**: OWASP LLM 2025 + MITRE ATLAS + NIST CSF, a **judge-validation workflow** (label a gold set → precision/recall/F1/κ), a regression gate, a code-based probe engine, and ingestion of other tools' output.
 
 ## Feature view (as of mid-2026; verify current docs)
 | | garak | PyRIT | promptfoo | **airt** |
