@@ -4,6 +4,8 @@
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
+![airt demo — install, run, find a canary leak, fail the CI gate](docs/demo.gif)
+
 ![airt report card — Critical canary-leakage finding mapped to OWASP/MITRE/NIST, regression gate failing](docs/report-card.png)
 
 Test LLM chatbots, RAG assistants, and AI features for prompt injection, jailbreaks,
